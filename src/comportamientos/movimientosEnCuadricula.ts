@@ -1,9 +1,9 @@
-/// <reference path = "../../dependencias/pilasweb.d.ts"/>
+/// <reference path = "ComportamientoAnimado.ts"/>
 
-class MovimientoEnCuadricula extends Comportamiento {
+class MovimientoEnCuadricula extends ComportamientoAnimado {
     cuadricula;
     movimiento;
-    estoyEmpezandoAMoverme;
+    puedoMovermeEnEsaDireccion;
     claseQueImita;
     
     iniciar(receptor){
@@ -12,27 +12,23 @@ class MovimientoEnCuadricula extends Comportamiento {
         this.movimiento = new this.claseQueImita({});
         this.movimiento.iniciar(receptor);
         this.movimiento.velocidad = this.velocidad();
-        this.estoyEmpezandoAMoverme = true;
-    }
-    actualizar(){
-        if (!this.puedoMovermeEnEsaDireccion() || this.movimiento.actualizar()){
-            
-            return true;
-        }
-    }
-//    claseQueImita(){
-//        // Template Method. Las subclases deben devolver una clase de comportamiento.
-//    }
-    puedoMovermeEnEsaDireccion(){
-        if (this.estoyEmpezandoAMoverme){
-            this.estoyEmpezandoAMoverme = false;
-            return this.verificarDireccion(this.receptor.casillaActual());
-        }
-        return true;
+        this.puedoMovermeEnEsaDireccion = false;
     }
     
-    velocidad(){
-        // Template Method. Devuelve la velocidad vertical ú horizontal según corresponda 
+    alIniciar(){
+    	this.puedoMovermeEnEsaDireccion = this.proximaCasilla();
+    	if(!this.puedoMovermeEnEsaDireccion){
+    		this.receptor.decir("No puedo ir para " + this.textoAMostrar());
+    	}
+    }
+    doActualizar(){
+    	super.doActualizar();
+        return this.puedoMovermeEnEsaDireccion && this.movimiento.actualizar();
+    }
+    alFinalizarAnimacion(){
+    	if(this.puedoMovermeEnEsaDireccion){
+    		this.receptor.setCasillaActual(this.proximaCasilla());
+    	}
     }
     
     // El nro 20 depende del nro 0.05 establecido en CaminaBase
@@ -42,20 +38,13 @@ class MovimientoEnCuadricula extends Comportamiento {
     velocidadVertical(){
         return this.cuadricula.altoCasilla() / 20;
     }
-    verificarDireccion(casilla){
-        var proximaCasilla = this.proximaCasilla(casilla);
-        if (!proximaCasilla){
-            this.receptor.decir("No puedo ir para " + this.textoAMostrar());
-            return false;
-        };
-        this.receptor.setCasillaActual(proximaCasilla);
-        return true
-    }
     
-    proximaCasilla(casilla){
+    velocidad(){
+        // Template Method. Devuelve la velocidad vertical ú horizontal según corresponda 
+    }
+    proximaCasilla(){
         // Template Method. Devolver la casilla a la que se va a avanzar
     }
-    
     textoAMostrar(){
         // Template Method. Para mostrar mensaje descriptivo al no poder avanzar
     }
@@ -64,8 +53,8 @@ class MovimientoEnCuadricula extends Comportamiento {
 class MoverACasillaDerecha extends MovimientoEnCuadricula {
     claseQueImita = CaminaDerecha;
     
-    proximaCasilla(casilla){
-        return casilla.casillaASuDerecha();
+    proximaCasilla(){
+        return this.receptor.casillaActual().casillaASuDerecha();
     }
     textoAMostrar(){
         return "la derecha";
@@ -78,8 +67,8 @@ class MoverACasillaDerecha extends MovimientoEnCuadricula {
 class MoverACasillaArriba extends MovimientoEnCuadricula{
     claseQueImita = CaminaArriba;
 
-    proximaCasilla(casilla){
-        return casilla.casillaDeArriba();
+    proximaCasilla(){
+        return this.receptor.casillaActual().casillaDeArriba();
     }
     textoAMostrar(){
         return "arriba";
@@ -92,8 +81,8 @@ class MoverACasillaArriba extends MovimientoEnCuadricula{
 class MoverACasillaAbajo extends MovimientoEnCuadricula{
     claseQueImita = CaminaAbajo;
 
-    proximaCasilla(casilla){
-        return casilla.casillaDeAbajo();
+    proximaCasilla(){
+        return this.receptor.casillaActual().casillaDeAbajo();
     }
     textoAMostrar(){
         return "abajo";
@@ -106,8 +95,8 @@ class MoverACasillaAbajo extends MovimientoEnCuadricula{
 class MoverACasillaIzquierda extends MovimientoEnCuadricula{
     claseQueImita = CaminaIzquierda;
 
-    proximaCasilla(casilla){
-        return casilla.casillaASuIzquierda();
+    proximaCasilla(){
+        return this.receptor.casillaActual().casillaASuIzquierda();
     }
     textoAMostrar(){
         return "la izquierda";
@@ -118,7 +107,7 @@ class MoverACasillaIzquierda extends MovimientoEnCuadricula{
 }
 
 class MoverTodoAIzquierda extends MoverACasillaIzquierda{
-   proximaCasilla(casilla){
+   proximaCasilla(){
         return this.cuadricula.casilla(this.receptor.casillaActual().nroFila,0);
    }
    velocidad(){
@@ -127,7 +116,7 @@ class MoverTodoAIzquierda extends MoverACasillaIzquierda{
 }
 
 class MoverTodoADerecha extends MoverACasillaDerecha{
-   proximaCasilla(casilla){
+   proximaCasilla(){
         return this.cuadricula.casilla(this.receptor.casillaActual().nroFila,this.cuadricula.cantColumnas-1);
    }
    velocidad(){
@@ -136,7 +125,7 @@ class MoverTodoADerecha extends MoverACasillaDerecha{
 }
 
 class MoverTodoArriba extends MoverACasillaArriba{
-   proximaCasilla(casilla){
+   proximaCasilla(){
         return this.cuadricula.casilla(this.receptor.casillaActual().nroColumna,0);
    }
    velocidad(){
@@ -145,7 +134,7 @@ class MoverTodoArriba extends MoverACasillaArriba{
 }
 
 class MoverTodoAbajo extends MoverACasillaAbajo{
-   proximaCasilla(casilla){
+   proximaCasilla(){
         return this.cuadricula.casilla(this.receptor.casillaActual().nroColumna,this.cuadricula.cantFilas-1);
    }
    velocidad(){
