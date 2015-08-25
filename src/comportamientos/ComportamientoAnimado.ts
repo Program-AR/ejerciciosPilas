@@ -44,9 +44,11 @@
 
 class ComportamientoAnimado extends Comportamiento {
 	secuenciaActualizar;
+	nombreAnimacionAnterior;
 	
 	iniciar(receptor){
 		super.iniciar(receptor);
+		this.nombreAnimacionAnterior = this.receptor.nombreAnimacion() || this.nombreAnimacionDefault();
 		this.secuenciaActualizar = new Array();
  		this.secuenciaActualizar.push(function() {
         	this.receptor.cargarAnimacion(this.nombreAnimacion());
@@ -57,7 +59,7 @@ class ComportamientoAnimado extends Comportamiento {
         	return this.doActualizar(); 
    		}.bind(this));
    		this.secuenciaActualizar.push(function() {
-        	//this.receptor.cargarAnimacion(this.nombreAnimacionParado());
+        	this.receptor.cargarAnimacion(this.nombreAnimacionAnterior);
         	this.alTerminarAnimacion();
         	return true;
    		}.bind(this));	
@@ -76,12 +78,11 @@ class ComportamientoAnimado extends Comportamiento {
 	
 	/* Redefinir si corresponde animar el comportamiento. */
 	nombreAnimacion(){
-		return this.argumentos.nombreAnimacion || this.nombreAnimacionParado();
+		return this.argumentos.nombreAnimacion || this.nombreAnimacionAnterior();
 	}
-	
-	/* Redefinir si corresponde */
-	nombreAnimacionParado(){
-		return this.argumentos.nombreAnimacionParado || 'parado';
+
+	nombreAnimacionDefault(){
+		return "parado";
 	}
 	
 	/* Redefinir si corresponde */
@@ -99,6 +100,6 @@ class ComportamientoAnimado extends Comportamiento {
 	 *  Por defecto termina cuando termina la animación.
 	 *  Al redefinir siempre debe llamarse a super */
 	doActualizar(){
-		return this.receptor.avanzarAnimacion()
+		return this.receptor.terminoAnimacion();
 	}
 } 

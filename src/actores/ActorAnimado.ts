@@ -19,6 +19,7 @@ class ActorAnimado extends Actor {
     _casillaActual;
     cuadricula;
     objetosRecogidos;
+    _terminoAnimacion
 
     constructor(x, y, opciones) {
         this.sanitizarOpciones(opciones);
@@ -27,6 +28,7 @@ class ActorAnimado extends Actor {
         this.definirAnimacion("correr", this.opciones.cuadrosCorrer, 5);
         this.definirAnimacion("parado", this.opciones.cuadrosParado, 5);
 
+        this.aprender(Animarse, {});
         this.detener_animacion();
         this.objetosRecogidos = [];
     }
@@ -39,19 +41,8 @@ class ActorAnimado extends Actor {
         this.opciones.cantFilas = ops.cantFilas || 1;
     }
 
-    mover(x,y) {
-        this.x += x;
-        this.y += y;
-        this.pasito_correr();
-    }
-
     definirAnimacion(nombre, cuadros, velocidad){
         this._imagen.definir_animacion(nombre, cuadros, velocidad);
-    }
-
-    pasito_correr() {
-        this.cargarAnimacion("correr");
-        this._imagen.avanzar();
     }
 
     tocando(etiqueta){
@@ -87,7 +78,17 @@ class ActorAnimado extends Actor {
     }
 
     avanzarAnimacion(){
-    	return !this._imagen.avanzar();
+    	return this._terminoAnimacion = !this._imagen.avanzar();
+    }
+
+    nombreAnimacion(){
+        if(this._imagen.animacion_en_curso){
+                return this._imagen.animacion_en_curso.nombre;
+        }
+    }
+
+    terminoAnimacion(){
+        return this._terminoAnimacion;
     }
 
     cantidadDeSprites(){
