@@ -1,3 +1,7 @@
+/// <reference path = "../../dependencias/pilasweb.d.ts" />
+/// <reference path = "ComportamientoAnimado.ts" />
+/// <reference path = "../escenas/LogicaEstadosEscena.ts" />
+
 /*
 Es un comportamiento genérico con la idea de ser extendido
 Sus características son
@@ -11,20 +15,12 @@ La escena que lo utiliza debe tener definido
 automata
 
 */
-class SinEstado extends Estado{
-	realizarTransicion(idComport,comportamiento){
-		comportamiento.ejecutarse();
-	}
-}
 
 class ComportamientoColision extends ComportamientoAnimado {
-	/*nombreAnimacion(){
-		// redefinir por subclase
-		return "parado";
-	}*/
+
 	alIniciar(){
-		if(pilas.escena_actual().estado == undefined){
-			pilas.escena_actual().estado = new SinEstado()
+		if(!pilas.escena_actual().estado){
+			pilas.escena_actual().estado = new SinEstado();
 		}
 	}
 

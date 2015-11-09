@@ -17,7 +17,6 @@ class ErrorEnEstados{
 
 }
 
-
 class Estado{
   transiciones;
   identifier;
@@ -49,7 +48,7 @@ class Estado{
       }
   }
 
-  realizarAccion(comportamiento,this){
+  realizarAccion(comportamiento,estado){
     comportamiento.ejecutarse()
   }
 }
@@ -123,4 +122,16 @@ class BuilderStatePattern{
 
     }
 
+}
+
+class SinEstado extends Estado {
+
+  constructor(){
+    super('sinEstado')
+  }
+
+  realizarTransicion(idComport, comportamiento) {
+    comportamiento.ejecutarse();
+  }
+  
 }
