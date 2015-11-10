@@ -15,7 +15,6 @@ La escena que lo utiliza debe tener definido
 automata
 
 */
-
 class ComportamientoColision extends ComportamientoAnimado {
 
 	alIniciar(){
@@ -50,11 +49,10 @@ class ComportamientoColision extends ComportamientoAnimado {
 }
 
 class DesencadenarAnimacionDobleSiColiciona extends ComportamientoColision{
-	metodo(objetoColision){
-		this.receptor.cargarAnimacion(this.argumentos['idAnimacionReceptor']);
-		objetoColision.cargarAnimacion(this.argumentos['idAnimacion']);
-
-	}
+		metodo(objetoColision){
+			this.receptor.cargarAnimacion(this.argumentos['idAnimacionReceptor']);
+			objetoColision.cargarAnimacion(this.argumentos['idAnimacion']);
+		}
 
 
 }
