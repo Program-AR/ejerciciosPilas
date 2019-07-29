@@ -1,5 +1,5 @@
 # IMPORTANTE: Este repositorio está en desuso.
-# Todo el contenido de este repositorio ahora está en https://github.com/Program-AR/pilas-bloques
+# Todo el contenido de este repositorio ahora está en https://github.com/Program-AR/pilas-bloques-exercises
 
 ## Ejercicios de pilas-engine (versión web)
 
